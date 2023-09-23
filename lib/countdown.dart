@@ -19,66 +19,79 @@ class CountDown {
 
     Duration _timeUntilDue = due.difference(DateTime.now());
 
+    if (_timeUntilDue.inSeconds < 0) {
+      return finishedText;
+    }
+
     int _daysUntil = _timeUntilDue.inDays;
     int _hoursUntil = _timeUntilDue.inHours - (_daysUntil * 24);
     int _minUntil =
         _timeUntilDue.inMinutes - (_daysUntil * 24 * 60) - (_hoursUntil * 60);
-    int _secUntil = _timeUntilDue.inSeconds - (_minUntil * 60);
-    // String s = _secUntil.toString().substring(_secUntil.toString().length - 2);
-    // //Fixed Invalid Range Value
-    String s = _secUntil.toString().length <= 2
-        ? _secUntil.toString()
-        : _secUntil.toString().substring(_secUntil.toString().length - 2);
+    int _secUntil = _timeUntilDue.inSeconds -
+        (_daysUntil * 24 * 3600) -
+        (_hoursUntil * 3600) -
+        (_minUntil * 60);
 
-    //Check whether to return longDateName date name or not
+    // Check whether to return longDateName date name or not
     if (showLabel == false) {
       if (_daysUntil > 0) {
         retVal += _daysUntil.toString() + " : ";
       }
-      if (_hoursUntil > 0) {
+      if (_hoursUntil > 0 || _daysUntil > 0) {
+        // Display hours if they are non-zero or if there are days
         retVal += _hoursUntil.toString() + " : ";
       }
-      if (_minUntil > 0) {
+      if (_minUntil > 0 || _hoursUntil > 0 || _daysUntil > 0) {
+        // Display minutes if they are non-zero or if there are hours or days
         retVal += _minUntil.toString() + " : ";
       }
-      if (_secUntil > 0) {
-        retVal += s;
-      }
+      retVal += _secUntil.toString();
     } else {
       if (longDateName == false) {
         if (_daysUntil > 0) {
           retVal += _daysUntil.toString() + daysTextShort;
         }
-        if (_hoursUntil > 0 && (!collapsing || _daysUntil <= 0)) {
+        if ((_hoursUntil > 0 || _daysUntil > 0) &&
+            (!collapsing || _daysUntil <= 0)) {
           retVal += _hoursUntil.toString() + hoursTextShort;
         }
-        if (_minUntil > 0 && (!collapsing || _hoursUntil <= 0)) {
+        if ((_minUntil > 0 || _hoursUntil > 0 || _daysUntil > 0) &&
+            (!collapsing || _hoursUntil <= 0)) {
           retVal += _minUntil.toString() + minutesTextShort;
         }
-        if (_secUntil > 0 && (!collapsing || _minUntil <= 0)) {
-          retVal += s + secondsTextShort;
+        if ((_secUntil > 0 ||
+                _minUntil > 0 ||
+                _hoursUntil > 0 ||
+                _daysUntil > 0) &&
+            (!collapsing || _minUntil <= 0)) {
+          retVal += _secUntil.toString() + secondsTextShort;
         }
       } else {
         if (_daysUntil > 0) {
           retVal += _daysUntil.toString() + daysTextLong;
         }
-        if (_hoursUntil > 0 && (!collapsing || _daysUntil <= 0)) {
+        if ((_hoursUntil > 0 || _daysUntil > 0) &&
+            (!collapsing || _daysUntil <= 0)) {
           retVal += _hoursUntil.toString() + hoursTextLong;
         }
-        if (_minUntil > 0 && (!collapsing || _hoursUntil <= 0)) {
+        if ((_minUntil > 0 || _hoursUntil > 0 || _daysUntil > 0) &&
+            (!collapsing || _hoursUntil <= 0)) {
           retVal += _minUntil.toString() + minutesTextLong;
         }
-        if (_secUntil > 0 && (!collapsing || _minUntil <= 0)) {
-          retVal += s + secondsTextLong;
+        if ((_secUntil > 0 ||
+                _minUntil > 0 ||
+                _hoursUntil > 0 ||
+                _daysUntil > 0) &&
+            (!collapsing || _minUntil <= 0)) {
+          retVal += _secUntil.toString() + secondsTextLong;
         }
       }
     }
-    if (_timeUntilDue.inSeconds < 1) {
-      retVal = finishedText;
-    }
-    else if (collapsing) {
+
+    if (collapsing) {
       retVal += endingText;
     }
+
     return retVal;
   }
 }
